@@ -1,6 +1,6 @@
 import logging
 
-from strategy.buy_the_close import TradingBroker
+from trading_broker import TradingBroker
 
 logger = logging.getLogger(__name__)
 

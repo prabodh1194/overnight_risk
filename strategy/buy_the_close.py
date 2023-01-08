@@ -1,34 +1,7 @@
-from abc import ABC, abstractmethod
-
 from constants import TradingPartner, TradingDirection
+from trading_broker import TradingBroker
 from trading_broker.mock import MockTradingBroker
 from trading_broker.zerodha import ZerodhaTradingBroker
-
-
-class TradingBroker(ABC):
-    @abstractmethod
-    def set_asset_to_trade(self, asset_to_trade: str):
-        ...
-
-    @abstractmethod
-    def get_current_funds(self):
-        ...
-
-    @abstractmethod
-    def get_asset_price(self):
-        ...
-
-    @abstractmethod
-    def get_current_quantity(self):
-        ...
-
-    @abstractmethod
-    def buy(self, quantity: int):
-        ...
-
-    @abstractmethod
-    def sell(self, quantity: int):
-        ...
 
 
 class BuyTheClose:
