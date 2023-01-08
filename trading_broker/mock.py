@@ -24,12 +24,25 @@ class MockTradingBroker(TradingBroker):
     def get_current_funds(self) -> float:
         with self.conn.cursor() as cursor:
             cursor.execute('SELECT * FROM mock.funds')
-            res = cursor.fetchone()
+            res, = cursor.fetchone()
 
             return res
 
     def get_asset_price(self) -> float:
-        pass
+        today_date, direction = self.__get_today_date()
+
+        with self.conn.cursor() as cursor:
+            cursor.execute(f'''
+                select
+                    {direction}
+                from
+                    test_data.niftybees
+                where
+                    date='{today_date}'
+            ''')
+            res = cursor.fetchone()
+
+            return res[0]
 
     def get_current_quantity(self) -> int:
         pass
@@ -39,3 +52,19 @@ class MockTradingBroker(TradingBroker):
 
     def sell(self, quantity: int):
         pass
+
+    def __get_today_date(self) -> (str, str):
+        with self.conn.cursor() as cursor:
+            cursor.execute('SELECT curr_date, direction FROM mock.iterator')
+            curr_date, direction = cursor.fetchone()
+
+        with self.conn.cursor() as cursor:
+            cursor.execute(f'''
+            UPDATE mock.iterator
+            SET curr_date = (select date from test_data.niftybees where date > '{curr_date}' order by date limit 1),
+                direction = '{'close' if direction == 'open' else 'open'}'
+            ''')
+
+            self.conn.commit()
+
+        return curr_date, direction
