@@ -50,7 +50,14 @@ class MockTradingBroker(TradingBroker):
         pass
 
     def buy(self, quantity: int):
-        return quantity, quantity * self.get_asset_price()
+        trade_price = self.get_asset_price() * quantity
+
+        with self.conn.cursor() as cursor:
+            cursor.execute(f'UPDATE mock.funds SET funds = funds - {trade_price}')
+
+            self.conn.commit()
+
+        return quantity, trade_price
 
     def sell(self, quantity: int):
         pass
