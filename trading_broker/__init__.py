@@ -6,6 +6,10 @@ logger = logging.getLogger(__name__)
 
 class TradingBroker(ABC):
     @abstractmethod
+    def get_asset_to_trade(self) -> str:
+        ...
+
+    @abstractmethod
     def set_asset_to_trade(self, asset_to_trade: str) -> None:
         ...
 

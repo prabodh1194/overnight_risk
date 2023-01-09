@@ -6,4 +6,4 @@ logger = logging.getLogger(__name__)
 
 
 class ZerodhaTradingBroker(TradingBroker):
-    pass
+    ...

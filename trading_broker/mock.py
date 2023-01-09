@@ -17,6 +17,10 @@ class MockTradingBroker(TradingBroker):
             user='postgres',
             password=settings.POSTGRES_PASSWORD
         )
+        self.today_date, self.direction = self.__get_today_date()
+
+    def get_asset_to_trade(self) -> str:
+        return self.__asset_to_trade
 
     def set_asset_to_trade(self, asset_to_trade: str):
         self.__asset_to_trade = asset_to_trade
@@ -29,16 +33,14 @@ class MockTradingBroker(TradingBroker):
             return res
 
     def get_asset_price(self) -> float:
-        today_date, direction = self.__get_today_date()
-
         with self.conn.cursor() as cursor:
             cursor.execute(f'''
                 select
-                    {direction}
+                    {self.direction}
                 from
                     test_data.niftybees
                 where
-                    date='{today_date}'
+                    date='{self.today_date}'
             ''')
             res = cursor.fetchone()
 
@@ -48,7 +50,7 @@ class MockTradingBroker(TradingBroker):
         pass
 
     def buy(self, quantity: int):
-        pass
+        return quantity, quantity * self.get_asset_price()
 
     def sell(self, quantity: int):
         pass
